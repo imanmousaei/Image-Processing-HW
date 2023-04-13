@@ -39,7 +39,7 @@ def crop_contour(img, contour):
     # Crop and save the detected face region
     for i, (x, y, w, h) in enumerate(contour):
         cropped = img[y:y+h, x:x+w]
-        cv2.imwrite(f'img/face{i}.jpg', cropped)
+        cv2.imwrite(f'output/face{i}.jpg', cropped)
 
 
 def mul_contour(contour, mul):
@@ -78,8 +78,8 @@ def rotate_rgb_image(image, angle):
     return rot_img
 
 
-def add_contour(contour, translation):
-    contour = contour + translation
+def add_contour(contour, add):
+    contour = contour + add
 
     return contour
 
@@ -92,12 +92,11 @@ def shift_contour(contour, shift_x=0, shift_y=0):
 
 
 def transform_contours(img, contours, transformation='rotate'):
-    print(img.shape)
     # mul and add are not Geometric Transformations but I did them for fun
 
     for (x, y, w, h) in contours:
         cropped = img[y:y+h, x:x+w]
-        print(x, y, w, h, cropped.shape)
+
         if transformation == 'rotate':
             img[y:y+h, x:x+w] = rotate_rgb_image(cropped, angle=45)
         elif transformation == 'flipud':
@@ -107,7 +106,7 @@ def transform_contours(img, contours, transformation='rotate'):
         elif transformation == 'mul':
             img[y:y+h, x:x+w] = mul_contour(cropped, mul=2)
         elif transformation == 'add':
-            img[y:y+h, x:x+w] = add_contour(cropped, translation=20)
+            img[y:y+h, x:x+w] = add_contour(cropped, add=20)
 
     return img
 
@@ -119,7 +118,9 @@ if __name__ == '__main__':
     faces = detect_faces(img)
     # img = draw_rectangle(img, faces)
 
-    img = transform_contours(img, faces, 'rotate')
+    transformation = 'add'
+    img = transform_contours(img, faces, transformation)
+    cv2.imwrite(f'output/1-{transformation}.jpg', img)
 
     # resize to fit in my screen
     img = resize_image(img, 20)
