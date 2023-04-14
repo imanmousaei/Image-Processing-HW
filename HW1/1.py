@@ -5,10 +5,10 @@ import numpy as np
 def detect_faces(img):
     face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-    # Convert into grayscale
+    # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # Detect faces
+    # Detect faces larger than 100x100
     faces = face_cascade.detectMultiScale(gray, 1.2, 5, minSize=[100, 100])
     return faces
 
