@@ -34,14 +34,24 @@ def convert_to_YCrCb(img):
     ycrcb = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
     return ycrcb
 
+
 if __name__ == '__main__':
     image_path = 'img/image2.jpg'
     img = cv2.imread(image_path)
     num_colors = 25
     
     compressed_img = index_compress(img, num_colors)
-    cv2.imwrite(f'output/2-compressed_image2-colors-{num_colors}.jpg', compressed_img)
+    cv2.imwrite(f'output/2-compressed-rgb-colors-{num_colors}.jpg', compressed_img)
 
-    lab = convert_to_LAB(compressed_img)
-    hsv = convert_to_HSV(compressed_img)
-    ycrcb = convert_to_YCrCb(compressed_img)
+    lab = convert_to_LAB(img)
+    lab_compressed = index_compress(lab, num_colors)
+    cv2.imwrite(f'output/2-compressed-lab-colors-{num_colors}.jpg', lab_compressed)
+    
+    hsv = convert_to_HSV(img)
+    hsv_compressed = index_compress(hsv, num_colors)
+    cv2.imwrite(f'output/2-compressed-hsv-colors-{num_colors}.jpg', hsv_compressed)
+
+    
+    ycrcb = convert_to_YCrCb(img)
+    ycrcb_compressed = index_compress(ycrcb, num_colors)
+    cv2.imwrite(f'output/2-compressed-ycrcb-colors-{num_colors}.jpg', ycrcb_compressed)
