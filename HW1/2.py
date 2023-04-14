@@ -3,9 +3,7 @@ import cv2
 from sklearn.cluster import KMeans
 
 
-def index_compress(image_path, num_colors=8):
-    img = cv2.imread(image_path)
-
+def index_compress(img, num_colors=8):
     # Reshape each channel to a 1D array of pixels
     pixels = img.reshape(-1, 3)
 
@@ -24,7 +22,26 @@ def index_compress(image_path, num_colors=8):
     return new_img
 
 
+def convert_to_HSV(img):
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    return hsv
+
+def convert_to_LAB(img):
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    return lab
+
+def convert_to_YCrCb(img):
+    ycrcb = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+    return ycrcb
+
 if __name__ == '__main__':
     image_path = 'img/image2.jpg'
-    compressed_img = index_compress(image_path)
-    cv2.imwrite(f'output/2-compressed_image2.jpg', compressed_img)
+    img = cv2.imread(image_path)
+    num_colors = 25
+    
+    compressed_img = index_compress(img, num_colors)
+    cv2.imwrite(f'output/2-compressed_image2-colors-{num_colors}.jpg', compressed_img)
+
+    lab = convert_to_LAB(compressed_img)
+    hsv = convert_to_HSV(compressed_img)
+    ycrcb = convert_to_YCrCb(compressed_img)
