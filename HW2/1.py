@@ -89,7 +89,6 @@ def cartoonize2(img, edges_weight=2):
 
 def cartoonize3(img, edges_weight=10):
     edges = sobel_edge_detection(img)
-    print(edges)
     edges = cv2.cvtColor(edges, cv2.COLOR_GRAY2BGR)
 
     smooth = smooth_image(img)
