@@ -106,8 +106,10 @@ def show_image(img, label):
 if __name__ == '__main__':
     img = cv2.imread('img/img1.jpg')
     # img = cartoonize1(img, edges_weight=10)
-    # img = cartoonize2(img, edges_weight=2)
-    img = cartoonize3(img, edges_weight=10)
-
-    img = resize_image(img, 70)
-    show_image(img, 'cartoon')
+    img = cartoonize2(img, edges_weight=2)
+    # img = cartoonize3(img, edges_weight=10)
+    
+    cv2.imwrite('outputs/cartoon/2.png', img)
+    
+    # img = resize_image(img, 70)
+    # show_image(img, 'cartoon')
