@@ -36,32 +36,55 @@ def gaussian_filter(img, kernel_size):
     return blur
 
 
+def add_noise(img, mean=0, variance=50):
+    sigma = np.sqrt(variance)
+    gaussian = np.random.normal(mean, sigma, img.shape)
+
+    # Add Gaussian noise to image
+    noisy_img = img + gaussian.astype('uint8')
+    return noisy_img
+
+
+def plot_losses(losses):
+    lists = sorted(losses.items()) # sorted by key, return a list of tuples
+    x, y = zip(*lists) # unpack a list of pairs into two tuples
+    plt.plot(x, y)
+    plt.title(imagename)
+    plt.xlabel('Kernel Size')
+    plt.ylabel(loss_function)
+    plt.savefig(f'outputs/noise={variance}/{loss_function}-{imagename}')
+    # plt.show()
+    plt.clf() # clear plot
+
+
 filenames = [
     'lena.tif', 
     'cameraman.tif', 
     'baboon.bmp'
 ]
 
-loss_function = 'psnr'
 
 if __name__ == '__main__':
-    for imagename in filenames:
-        losses = []
-        for kernel_size in range(1,102,2):
-            img = cv2.imread(f'img/{imagename}')
-            
-            blur = gaussian_filter(img, kernel_size)
-            
-            if loss_function.lower() == 'mse':
-                loss = MSE(img, blur)
-            else:
-                loss = PSNR(img, blur)
-            
-            losses.append(loss)
-            print(f'loss of {imagename} with kernel_size = {kernel_size} is {loss}')
+    for filename in filenames:
+        for variance in [10,50,100]:
+            for loss_function in ['mse', 'psnr']:
+                losses = {}
+                for kernel_size in range(1,102,2):
+                    img = cv2.imread(f'img/{filename}')
+                    imagename = filename.split('.')[0]
+                    
+                    noisy = add_noise(img, variance=variance)
+                    # show_image(noisy, 'noisy')
+                    cv2.imwrite(f'outputs/noise={variance}/noisy-{imagename}.png', noisy)
+                    
+                    blur = gaussian_filter(noisy, kernel_size)
+                    
+                    if loss_function.lower() == 'mse':
+                        loss = MSE(img, blur)
+                    else:
+                        loss = PSNR(img, blur)
+                                    
+                    losses[kernel_size] = loss
+                    print(f'{loss_function} of {imagename} with kernel_size = {kernel_size} is {loss}')
 
-        plt.plot(losses)
-        plt.title(imagename)
-        plt.xlabel('MSE')
-        plt.ylabel('Kernel Size')
-        plt.show()
+                plot_losses(losses)
